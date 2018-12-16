@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Train</title>
+</head>
+<body>
+
+  <input type="text" id="from">
+  <input type="text" id="to">
+  <input type="button" id="search" value="SEARCH">
+
+
+</body>
+<script type="text/javascript">
+  
+  var from= document.getElementById('from');
+  var to= document.getElementById('to');
+  var search= document.getElementById('search');
+  var obj1 ;
+
+  search.addEventListener('click',  function(){
+     console.log(from.value);
+     console.log(to.value);
+     console.log("promis starts");
+
+    var train= new Promise( (res, rej)=>{
+    let source= from.value;
+    let dest= to.value;
+
+    if(source&&dest)
+    {
+      
+      res(source,dest);
+
+    }
+
+    else
+    {
+      rej("input empty");
+    }
+  }).then(function(source,dest){
+    console.log(source);
+    var xhttp = new XMLHttpRequest();
+
+      
+      xhttp.onreadystatechange = function(){
+        console.log('onreadystatechange', this)
+        if(xhttp.readyState==4 && xhttp.status==200){
+          var obj1 = JSON.parse(xhttp.responseText) ;
+          var origin_code;
+          console.log(obj1.stations);
+
+          for(var i=0; i< obj1.stations.length ; i++){
+            if(obj1.stations[i].name==source){
+                origin_code = obj1.stations[i].code ;
+                console.log(1);
+                break;
+            }
+          }
+          console.log(origin_code);
+        }
+      };
+
+      xhttp.open("GET",`https://api.railwayapi.com/v2/name-to-code/station/${source}/apikey/zipuzy6pfg/`,true);
+      xhttp.send();
+
+  }).catch((err)=>{
+    console.log(err);
+  });
+
+
+  });
+
+  
+
+
+</script>
+</html>
